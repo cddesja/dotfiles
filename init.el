@@ -24,17 +24,6 @@ There are two things you can do about this warning:
 ;; use the system wide shell
 (exec-path-from-shell-initialize)
 
-;; Theme
-;; (use-package tron-legacy-theme
-;;   :config
-;;   (setq tron-legacy-theme-vivid-cursor t)
-;;   (setq tron-legacy-theme-softer-bg t)
-;;    (load-theme 'tron-legacy t))
-
-;; 
-;; (setq tron-legacy-theme-dark-fg-bright-comments t) 
-;; 
-  
 ;; disable annoying bell function
 (setq ring-bell-function 'ignore)
 
