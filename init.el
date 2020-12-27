@@ -1,21 +1,9 @@
 ;; Enable MELPA
 (require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (when no-ssl
-    (warn "\
-Your version of Emacs does not support SSL connections,
-which is unsafe because it allows man-in-the-middle attacks.
-There are two things you can do about this warning:
-1. Install an Emacs version that does support SSL and be safe.
-2. Remove this warning from your init file so you won't see it again."))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+;; and `package-pinned-packages`. Most users will not need or want to do this.
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
 ;; disable toolbar
@@ -45,6 +33,12 @@ There are two things you can do about this warning:
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)))
+
+;; set up org agenda
+(setq org-agenda-files (list "~/Tresorit/chris/org/work.org"
+                             "~/Tresorit/chris/org/st120.org" 
+                             "~/Tresorit/chris/org/st140.org" 
+                             "~/Tresorit/chris/org/js304.org"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -101,7 +95,7 @@ There are two things you can do about this warning:
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; theming
 :::::::::::::::::::::::
-(load-theme 'solarized-dark t)
+(load-theme 'solarized-light t)
 
 ;; make the fringe stand out from the background
 (setq solarized-distinct-fringe-background t)
@@ -111,7 +105,6 @@ There are two things you can do about this warning:
 
 ;; Use more italics
 (setq solarized-use-more-italic t)
-
 (require 'color)
 (set-face-attribute 'org-block nil :background
                     (color-darken-name
@@ -119,18 +112,16 @@ There are two things you can do about this warning:
 
 ;; dark window borders on os x
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
-(custom-set-variables
 
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(magit zenburn-theme use-package tron-legacy-theme spacemacs-theme solarized-theme smartparens pos-tip poet-theme org-bullets org nord-theme monokai-theme monokai-pro-theme leuven-theme kaolin-themes htmlize gotham-theme focus exec-path-from-shell ess dracula-theme doom-themes cyberpunk-theme company color-theme-sanityinc-tomorrow clues-theme berrys-theme)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; only need this if I want a dark theme
+;; (add-to-list 'default-frame-alist '(ns-appearance . dark))
+(setq ns-use-proxy-icon nil)
+(setq frame-title-format nil)
+
+;; enable polymode for R
+(require 'poly-R)
+
+;; enable ido
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
