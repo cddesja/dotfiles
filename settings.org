@@ -8,26 +8,21 @@
 
 Font lock keywoards for syntactic highlighting in R
 #+begin_src emacs-lisp
-;; Font lock keywords for syntactic highlighting:
-(setq ess-R-font-lock-keywords
-      '((ess-R-fl-keyword:keywords . t)
-	(ess-R-fl-keyword:constants . t)
-	(ess-R-fl-keyword:modifiers . t)
-	(ess-R-fl-keyword:fun-defs . t)
-	(ess-R-fl-keyword:assign-ops . t)
-	(ess-R-fl-keyword:%op% . t)
-	(ess-fl-keyword:fun-calls . t)
-	(ess-fl-keyword:numbers . t)
-	(ess-fl-keyword:operators . t)
-	(ess-fl-keyword:delimiters . t)
-	(ess-fl-keyword:=)
-	(ess-R-fl-keyword:F&T . t)))
+  ;; Font lock keywords for syntactic highlighting:
+  (setq ess-R-font-lock-keywords
+	'((ess-R-fl-keyword:keywords . t)
+	  (ess-R-fl-keyword:constants . t)
+	  (ess-R-fl-keyword:modifiers . t)
+	  (ess-R-fl-keyword:fun-defs . t)
+	  (ess-R-fl-keyword:assign-ops . t)
+	  (ess-R-fl-keyword:%op% . t)
+	  (ess-fl-keyword:fun-calls . t)
+	  (ess-fl-keyword:numbers . t)
+	  (ess-fl-keyword:operators . t)
+	  (ess-fl-keyword:delimiters . t)
+	  (ess-fl-keyword:=)
+	  (ess-R-fl-keyword:F&T . t)))
 #+end_src
-
-
-
-#+RESULTS:
-: ((ess-R-fl-keyword:keywords . t) (ess-R-fl-keyword:constants . t) (ess-R-fl-keyword:modifiers . t) (ess-R-fl-keyword:fun-defs . t) (ess-R-fl-keyword:assign-ops . t) (ess-R-fl-keyword:%op% . t) (ess-fl-keyword:fun-calls . t) (ess-fl-keyword:numbers . t) (ess-fl-keyword:operators . t) (ess-fl-keyword:delimiters . t) (ess-fl-keyword:=) (ess-R-fl-keyword:F&T . t))
 
 - Disable annoying bell function
 #+begin_src emacs-lisp
@@ -119,9 +114,10 @@ Use flycheck instead of flymake
 
 * Use-Package
 #+begin_src emacs-lisp
-;; This is only needed once, near the top of the file
-(eval-when-compile
-  (require 'use-package))
+    ;; This is only needed once, near the top of the file
+  (eval-when-compile
+    (require 'use-package))
+  (setq use-package-always-ensure t)
 #+end_src
 
 * Theming
@@ -130,7 +126,7 @@ Use flycheck instead of flymake
   (load-theme 'gruvbox-dark-medium t)
 #+end_src
 
-* Languages
+* Language
 ** Org Mode
 - Increase the contrast of code blocks
 #+begin_src emacs-lisp :eval no
@@ -207,7 +203,7 @@ Enable LSP for R
   ;; optionally
   (use-package lsp-ui :commands lsp-ui-mode)
   ;; if you are helm user
-  (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+  ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
   ;; if you are ivy user
   ;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
   ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
@@ -225,13 +221,34 @@ Enable LSP for R
 :major-modes '(ess-r-mode inferior-ess-r-mode)                    :server-id 'lsp-R)))
 #+end_src
 
-* Set up HELM
 
+* Set up Ivy
 #+begin_src emacs-lisp
-  (use-package helm
-      :config (require 'helm-config))
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (helm-mode 1)
+(use-package ivy
+  :init
+  ;;(ivy-mode)
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  ;; enable this if you want `swiper' to use it
+  ;; (setq search-default-mode #'char-fold-to-regexp)
+  :bind (("C-s" . swiper)
+  ("C-c C-r" . ivy-resume)
+  ("<f6>" . ivy-resume)
+  ("M-x" . counsel-M-x)
+  ("C-x C-f" . counsel-find-file)
+  ("<f1> f" . counsel-describe-function)
+  ("<f1> v" . counsel-describe-variable)
+  ("<f1> o" . counsel-describe-symbol)
+  ("<f1> l" . counsel-find-library)
+  ("<f2> i" . counsel-info-lookup-symbol)
+  ("<f2> u" . counsel-unicode-char)
+  ("C-c g" . counsel-git)
+  ("C-c j" . counsel-git-grep)
+  ("C-c k" . counsel-ag)
+  ("C-x l" . counsel-locate)
+  :map minibuffer-local-map
+  ("C-r" . counsel-minibuffer-history))
+  :config
+  (ivy-mode 1))
 #+end_src

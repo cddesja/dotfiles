@@ -47,3 +47,16 @@
 (define-key company-active-map (kbd "M-h") 'company-show-doc-buffer)
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(flx counsel zenburn-theme vterm use-package tron-legacy-theme spacemacs-theme solarized-theme smartparens rainbow-delimiters poly-R poet-theme org-bullets org nordless-theme nord-theme monokai-theme monokai-pro-theme modus-themes magit lsp-ui lsp-julia leuven-theme kaolin-themes julia-repl htmlize horizon-theme helm gruvbox-theme gotham-theme focus flycheck exec-path-from-shell ess dracula-theme doom-themes doom-modeline cyberpunk-theme cyberpunk-2019-theme company-quickhelp color-theme-sanityinc-tomorrow clues-theme berrys-theme)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
