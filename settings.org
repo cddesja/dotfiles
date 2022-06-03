@@ -1,0 +1,237 @@
+#+TITLE: Orgmode Configuration File
+* Emacs UI fixes
+
+- Disable welcome screen
+#+begin_src emacs-lisp
+(setq inhibit-startup-screen t)
+#+end_src
+
+Font lock keywoards for syntactic highlighting in R
+#+begin_src emacs-lisp
+;; Font lock keywords for syntactic highlighting:
+(setq ess-R-font-lock-keywords
+      '((ess-R-fl-keyword:keywords . t)
+	(ess-R-fl-keyword:constants . t)
+	(ess-R-fl-keyword:modifiers . t)
+	(ess-R-fl-keyword:fun-defs . t)
+	(ess-R-fl-keyword:assign-ops . t)
+	(ess-R-fl-keyword:%op% . t)
+	(ess-fl-keyword:fun-calls . t)
+	(ess-fl-keyword:numbers . t)
+	(ess-fl-keyword:operators . t)
+	(ess-fl-keyword:delimiters . t)
+	(ess-fl-keyword:=)
+	(ess-R-fl-keyword:F&T . t)))
+#+end_src
+
+
+
+#+RESULTS:
+: ((ess-R-fl-keyword:keywords . t) (ess-R-fl-keyword:constants . t) (ess-R-fl-keyword:modifiers . t) (ess-R-fl-keyword:fun-defs . t) (ess-R-fl-keyword:assign-ops . t) (ess-R-fl-keyword:%op% . t) (ess-fl-keyword:fun-calls . t) (ess-fl-keyword:numbers . t) (ess-fl-keyword:operators . t) (ess-fl-keyword:delimiters . t) (ess-fl-keyword:=) (ess-R-fl-keyword:F&T . t))
+
+- Disable annoying bell function
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+end_src
+
+#+RESULTS:
+: ignore
+
+- Disable toolbar
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+#+end_src
+
+#+RESULTS:
+
+- Disable scroll bars
+#+begin_src emacs-lisp
+(scroll-bar-mode -1)
+#+end_src
+
+#+RESULTS:
+
+- Disable current line from being highlighted
+
+#+begin_src emacs-lisp
+ (global-hl-line-mode 0)
+#+end_src
+
+#+RESULTS:
+
+- Set default font
+#+begin_src emacs-lisp
+(set-frame-font "Menlo 15")
+#+end_src
+
+#+RESULTS:
+
+- Remove icon and frametitle
+#+begin_src emacs-lisp
+  (setq ns-use-proxy-icon nil)
+  (setq frame-title-format nil)
+#+end_src
+
+#+RESULTS:
+
+- Enable parenthesis matching
+#+begin_src emacs-lisp
+  (show-paren-mode 1)
+#+end_src 
+
+#+RESULTS:
+: t
+
+- Use smart parenthesis
+#+begin_src emacs-lisp
+(require 'smartparens-config)
+#+end_src
+
+#+RESULTS:
+: smartparens-config
+
+- Enable smartparens mode in ess-mode.
+#+begin_src emacs-lisp
+(add-hook 'ess-mode-hook #'smartparens-mode)
+#+end_src
+
+
+Use flycheck instead of flymake
+#+begin_src emacs-lisp
+;; Remove Flymake support:
+(setq ess-use-flymake nil)
+;; Replace it (globally) by Flycheck:
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode t))
+#+end_src 
+
+* Setup MELPA repository
+
+#+begin_src emacs-lisp
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+#+end_src
+
+#+RESULTS:
+
+* Use-Package
+#+begin_src emacs-lisp
+;; This is only needed once, near the top of the file
+(eval-when-compile
+  (require 'use-package))
+#+end_src
+
+* Theming
+- Set theme
+#+begin_src emacs-lisp
+  (load-theme 'gruvbox-dark-medium t)
+#+end_src
+
+* Languages
+** Org Mode
+- Increase the contrast of code blocks
+#+begin_src emacs-lisp :eval no
+;;   (require 'color)
+;;  (set-face-attribute 'org-block nil :background
+;;		      (color-lighten-name
+;;		       (face-attribute 'default :background) 50))
+;;  (set-face-background 'org-block-begin-line (color-lighten-name
+;;						(face-attribute 'default :background) 10))
+;;
+;;  (set-face-background 'org-block-end-line (color-lighten-name
+;;					      (face-attribute 'default :background) 10))
+#+end_src
+
+- Enable bullets
+#+begin_src emacs-lisp
+  (require 'org-bullets)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+
+- Enable Babel for R
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)))
+#+end_src
+
+- Stop Org-Mode from prompting about evaluating code
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+
+** R Programming Language
+
+- Enable rainbow parentheses for R
+#+begin_src emacs-lisp
+  (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+#+end_src
+
+- Enable polymode for R
+#+begin_src emacs-lisp
+  (require 'poly-R)
+#+end_src
+
+- Highlight R's new pipe
+#+begin_src emacs-lisp
+  (with-eval-after-load 'ess
+  (cl-pushnew "|>" ess-R-assign-ops :test 'string=))
+#+end_src
+
+* Set up Emacs shell
+
+- Use the system wide shell
+#+begin_src emacs-lisp
+  (exec-path-from-shell-initialize)
+#+end_src
+
+* Set up LSP
+
+Enable LSP for R
+
+#+begin_src emacs-lisp :eval no
+  (use-package lsp-mode
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    (setq lsp-keymap-prefix "C-c l")
+    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	   (ess-r-mode . lsp)
+	   ;; if you want which-key integration
+	   (lsp-mode . lsp-enable-which-key-integration)
+	   )
+    :commands lsp)
+
+  ;; optionally
+  (use-package lsp-ui :commands lsp-ui-mode)
+  ;; if you are helm user
+  (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+  ;; if you are ivy user
+  ;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+  ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+  ;; optionally if you want to use debugger
+  ;;(use-package dap-mode)
+  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+  ;; optional if you want which-key integration
+  ;;(use-package which-key
+  ;;    :config
+  ;;    (which-key-mode))
+  (with-eval-after-load 'lsp-mode  (lsp-register-client (make-lsp-client 
+:new-connection (lsp-stdio-connection '("R" "--slave" "-e" "languageserver::run()"))
+:major-modes '(ess-r-mode inferior-ess-r-mode)                    :server-id 'lsp-R)))
+#+end_src
+
+* Set up HELM
+
+#+begin_src emacs-lisp
+  (use-package helm
+      :config (require 'helm-config))
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (helm-mode 1)
+#+end_src
