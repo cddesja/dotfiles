@@ -1,4 +1,6 @@
 #+TITLE: Orgmode Configuration File
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+
 * Emacs UI fixes
 
 - Disable welcome screen
@@ -6,7 +8,7 @@
 (setq inhibit-startup-screen t)
 #+end_src
 
-Font lock keywoards for syntactic highlighting in R
+Font lock keywords for syntactic highlighting in R
 #+begin_src emacs-lisp
   ;; Font lock keywords for syntactic highlighting:
   (setq ess-R-font-lock-keywords
@@ -29,37 +31,26 @@ Font lock keywoards for syntactic highlighting in R
   (setq ring-bell-function 'ignore)
 #+end_src
 
-#+RESULTS:
-: ignore
-
 - Disable toolbar
 #+begin_src emacs-lisp
 (tool-bar-mode -1)
 #+end_src
-
-#+RESULTS:
 
 - Disable scroll bars
 #+begin_src emacs-lisp
 (scroll-bar-mode -1)
 #+end_src
 
-#+RESULTS:
-
 - Disable current line from being highlighted
-
 #+begin_src emacs-lisp
  (global-hl-line-mode 0)
 #+end_src
 
-#+RESULTS:
-
 - Set default font
 #+begin_src emacs-lisp
-(set-frame-font "Menlo 15")
+(add-to-list 'default-frame-alist
+	     '(font . "JetBrains Mono-15"))
 #+end_src
-
-#+RESULTS:
 
 - Remove icon and frametitle
 #+begin_src emacs-lisp
@@ -67,23 +58,15 @@ Font lock keywoards for syntactic highlighting in R
   (setq frame-title-format nil)
 #+end_src
 
-#+RESULTS:
-
 - Enable parenthesis matching
 #+begin_src emacs-lisp
-  (show-paren-mode 1)
+    (show-paren-mode 1)
 #+end_src 
-
-#+RESULTS:
-: t
 
 - Use smart parenthesis
 #+begin_src emacs-lisp
 (require 'smartparens-config)
 #+end_src
-
-#+RESULTS:
-: smartparens-config
 
 - Enable smartparens mode in ess-mode.
 #+begin_src emacs-lisp
@@ -123,12 +106,49 @@ Use flycheck instead of flymake
 * Theming
 - Set theme
 #+begin_src emacs-lisp
-  (load-theme 'gruvbox-dark-medium t)
+    ;;; For packaged versions which must use `require':
+  (use-package modus-themes
+    :ensure
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+	  modus-themes-bold-constructs t 
+	  modus-themes-region '(bg-only no-extend)
+	  modus-themes-mode-line '(accented borderless 4 1)
+	  modus-themes-syntax '(yellow-comments)
+	  modus-themes-subtle-line-numbers t
+	  modus-themes-markup '(intense background)
+	  modus-themes-paren-match '(intense)
+	  modus-themes-region '(accented)
+	  modus-themes-hl-line '(intense)
+	  modus-themes-org-blocks '(tinted-background)
+	  modus-themes-links '(bold italic background))
+
+
+    ;; Load the theme files before enabling a theme
+    (modus-themes-load-themes)
+    :config
+    ;; Load the theme of your choice:
+    (modus-themes-load-vivendi) ;; OR (modus-themes-load-vivendi)
+    :bind ("<f5>" . modus-themes-toggle))
+  ;; (load-theme 'solarized-selenized-dark t)
 #+end_src
 
+#+RESULTS:
+: modus-themes-toggle
+
 * Language
+Enable rainbox delimiters
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)
+         (org-mode . rainbow-delimiters-mode)
+         (ess-mode . rainbow-delimiters-mode)))
+#+end_src
+
+
 ** Org Mode
-- Increase the contrast of code blocks
+Increase the contrast of code blocks
 #+begin_src emacs-lisp :eval no
 ;;   (require 'color)
 ;;  (set-face-attribute 'org-block nil :background
@@ -141,40 +161,59 @@ Use flycheck instead of flymake
 ;;					      (face-attribute 'default :background) 10))
 #+end_src
 
-- Enable bullets
+Configure scaling of headers
+
+Enable bullets
 #+begin_src emacs-lisp
   (require 'org-bullets)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
 
-- Enable Babel for R
+Enable Babel for R
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)))
+  'org-babel-load-languages
+  '((R . t)))
 #+end_src
 
-- Stop Org-Mode from prompting about evaluating code
+Stop Org-Mode from prompting about evaluating code
 #+begin_src emacs-lisp
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 
-** R Programming Language
-
-- Enable rainbow parentheses for R
+Log time when a task has finished
 #+begin_src emacs-lisp
-  (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+(setq org-log-done 'time) 
 #+end_src
+
+Make org mode export to ODT to DOCX
+#+begin_src emacs-lisp
+(setq org-odt-preferred-output-format "docx")
+#+end_src
+
+** R Programming Language
 
 - Enable polymode for R
 #+begin_src emacs-lisp
   (require 'poly-R)
 #+end_src
 
+** LaTeX
+#+begin_src emacs-lisp
+;; For LaTeX, to remove the default width=.9\linewidth, set the org-latex-image-default-width to empty string. By this way, the image will have its natural size.
+;; To do that on the fly use the set-variable emacs command. Or to set this variable permanently, add the following line in your init.el : (setq org-latex-image-default-width "")
+(setq org-latex-image-default-width "")
+#+end_src
+
+* Configure Aspell
+#+begin_src emacs-lisp
+(setq ispell-program-name "/usr/local/Cellar/aspell/0.60.8/bin/aspell")
+#+end_src
+
 - Highlight R's new pipe
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ess
-  (cl-pushnew "|>" ess-R-assign-ops :test 'string=))
+      (with-eval-after-load 'ess
+      (cl-pushnew "|>" ess-R-assign-ops :test 'string=))
 #+end_src
 
 * Set up Emacs shell
@@ -187,40 +226,39 @@ Use flycheck instead of flymake
 * Set up LSP
 
 Enable LSP for R
-
+TODO: This breaks org mode fontification for R. Not sure why. 
 #+begin_src emacs-lisp :eval no
-  (use-package lsp-mode
-    :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   (ess-r-mode . lsp)
-	   ;; if you want which-key integration
-	   (lsp-mode . lsp-enable-which-key-integration)
-	   )
-    :commands lsp)
+  ;; (use-package lsp-mode			;
+  ;;   :init
+  ;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;;   (setq lsp-keymap-prefix "C-c l")
+  ;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+  ;; 		    (ess-r-mode . lsp)
+  ;; 		    ;; if you want which-key integration
+  ;; 		    (lsp-mode . lsp-enable-which-key-integration)
+  ;; 		    )
+  ;;   :commands lsp)
 
-  ;; optionally
-  (use-package lsp-ui :commands lsp-ui-mode)
-  ;; if you are helm user
-  ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-  ;; if you are ivy user
-  ;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-  ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+  ;; ;; optionally
+  ;; (use-package lsp-ui :commands lsp-ui-mode)
+  ;; ;; if you are helm user
+  ;; ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+  ;; ;; if you are ivy user
+  ;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+  ;; ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-  ;; optionally if you want to use debugger
-  ;;(use-package dap-mode)
-  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+  ;; ;; optionally if you want to use debugger
+  ;; ;;(use-package dap-mode)
+  ;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 
-  ;; optional if you want which-key integration
-  ;;(use-package which-key
-  ;;    :config
-  ;;    (which-key-mode))
-  (with-eval-after-load 'lsp-mode  (lsp-register-client (make-lsp-client 
-:new-connection (lsp-stdio-connection '("R" "--slave" "-e" "languageserver::run()"))
-:major-modes '(ess-r-mode inferior-ess-r-mode)                    :server-id 'lsp-R)))
+  ;; ;; optional if you want which-key integration
+  ;; ;;(use-package which-key
+  ;; ;;    :config
+  ;; ;;    (which-key-mode))
+  ;; (with-eval-after-load 'lsp-mode  (lsp-register-client (make-lsp-client 
+  ;; 						       :new-connection (lsp-stdio-connection '("R" "--slave" "-e" "languageserver::run()"))
+  ;; 						       :major-modes '(ess-r-mode inferior-ess-r-mode)                    :server-id 'lsp-R)))
 #+end_src
-
 
 * Set up Ivy
 #+begin_src emacs-lisp
@@ -252,3 +290,64 @@ Enable LSP for R
   :config
   (ivy-mode 1))
 #+end_src
+
+Set up ivy-rich
+#+begin_src emacs-lisp
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+#+end_src
+
+* Which-Key
+#+begin_src emacs-lisp
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1))
+#+end_src
+
+* Helpful
+#+begin_src emacs-lisp
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+#+end_src
+
+* Evil Mode
+#+begin_src emacs-lisp
+  (use-package evil
+    :config
+    (evil-mode 1))
+#+end_src
+
+* Enable ligatures
+#+begin_src emacs-lisp
+  (mac-auto-operator-composition-mode)
+#+end_src
+
+* Company Mode
+#+begin_src emacs-lisp
+  (use-package company
+    :bind (:map company-active-map
+	   ("C-n" . company-select-next)
+	   ("C-p" . company-select-previous)
+	   ("M-h" . company-show-doc-buffer))
+    :config
+    (setq company-idle-delay 0.3)
+    (setq company-selection-wrap-around t)
+    (setq company-tooltip-limit 10)
+    :hook
+     (after-init . global-company-mode))
+#+end_src
+
+;; Local Variables:
+;; eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
+;; End:
+
