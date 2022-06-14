@@ -1,24 +1,8 @@
 (setq inhibit-startup-screen t)
 
-;; Font lock keywords for syntactic highlighting:
-(setq ess-R-font-lock-keywords
-      '((ess-R-fl-keyword:keywords . t)
-	(ess-R-fl-keyword:constants . t)
-	(ess-R-fl-keyword:modifiers . t)
-	(ess-R-fl-keyword:fun-defs . t)
-	(ess-R-fl-keyword:assign-ops . t)
-	(ess-R-fl-keyword:%op% . t)
-	(ess-fl-keyword:fun-calls . t)
-	(ess-fl-keyword:numbers . t)
-	(ess-fl-keyword:operators . t)
-	(ess-fl-keyword:delimiters . t)
-	(ess-fl-keyword:=)
-	(ess-R-fl-keyword:F&T . t)))
-
 (setq ring-bell-function 'ignore)
 
 (tool-bar-mode -1)
-
 (scroll-bar-mode -1)
 
 (global-hl-line-mode 0)
@@ -34,6 +18,11 @@
 (require 'smartparens-config)
 
 (add-hook 'ess-mode-hook #'smartparens-mode)
+
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)
+         (org-mode . rainbow-delimiters-mode)
+         (ess-mode . rainbow-delimiters-mode)))
 
 ;; Remove Flymake support:
 (setq ess-use-flymake nil)
@@ -67,9 +56,8 @@
 	modus-themes-paren-match '(intense)
 	modus-themes-region '(accented)
 	modus-themes-hl-line '(intense)
-	modus-themes-org-blocks '(tinted-background)
+        modus-themes-org-blocks 'tinted-background
 	modus-themes-links '(bold italic background))
-
 
   ;; Load the theme files before enabling a theme
   (modus-themes-load-themes)
@@ -78,11 +66,6 @@
   (modus-themes-load-vivendi) ;; OR (modus-themes-load-vivendi)
   :bind ("<f5>" . modus-themes-toggle))
 ;; (load-theme 'solarized-selenized-dark t)
-
-(use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)
-         (org-mode . rainbow-delimiters-mode)
-         (ess-mode . rainbow-delimiters-mode)))
 
 ;;   (require 'color)
 ;;  (set-face-attribute 'org-block nil :background
@@ -108,6 +91,21 @@
 (setq org-odt-preferred-output-format "docx")
 
 (require 'poly-R)
+
+;; Font lock keywords for syntactic highlighting:
+(setq ess-R-font-lock-keywords
+      '((ess-R-fl-keyword:keywords . t)
+	(ess-R-fl-keyword:constants . t)
+	(ess-R-fl-keyword:modifiers . t)
+	(ess-R-fl-keyword:fun-defs . t)
+	(ess-R-fl-keyword:assign-ops . t)
+	(ess-R-fl-keyword:%op% . t)
+	(ess-fl-keyword:fun-calls . t)
+	(ess-fl-keyword:numbers . t)
+	(ess-fl-keyword:operators . t)
+	(ess-fl-keyword:delimiters . t)
+	(ess-fl-keyword:=)
+	(ess-R-fl-keyword:F&T . t)))
 
 ;; For LaTeX, to remove the default width=.9\linewidth, set the org-latex-image-default-width to empty string. By this way, the image will have its natural size.
 ;; To do that on the fly use the set-variable emacs command. Or to set this variable permanently, add the following line in your init.el : (setq org-latex-image-default-width "")
@@ -200,6 +198,7 @@
   ([remap describe-key] . helpful-key))
 
 (use-package evil
+  :init (setq evil-want-C-i-jump nil) ;; disable C-i and restore TAB functionality
   :config
   (evil-mode 1))
 
@@ -216,19 +215,3 @@
   (setq company-tooltip-limit 10)
   :hook
    (after-init . global-company-mode))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values
-   '((eval add-hook 'after-save-hook
-	   (lambda nil
-	     (org-babel-tangle))
-	   nil t))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

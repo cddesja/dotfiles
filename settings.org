@@ -3,76 +3,61 @@
 
 * Emacs UI fixes
 
-- Disable welcome screen
+Disable welcome screen
 #+begin_src emacs-lisp
 (setq inhibit-startup-screen t)
 #+end_src
 
-Font lock keywords for syntactic highlighting in R
-#+begin_src emacs-lisp
-  ;; Font lock keywords for syntactic highlighting:
-  (setq ess-R-font-lock-keywords
-	'((ess-R-fl-keyword:keywords . t)
-	  (ess-R-fl-keyword:constants . t)
-	  (ess-R-fl-keyword:modifiers . t)
-	  (ess-R-fl-keyword:fun-defs . t)
-	  (ess-R-fl-keyword:assign-ops . t)
-	  (ess-R-fl-keyword:%op% . t)
-	  (ess-fl-keyword:fun-calls . t)
-	  (ess-fl-keyword:numbers . t)
-	  (ess-fl-keyword:operators . t)
-	  (ess-fl-keyword:delimiters . t)
-	  (ess-fl-keyword:=)
-	  (ess-R-fl-keyword:F&T . t)))
-#+end_src
-
-- Disable annoying bell function
+Disable annoying bell function
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore)
 #+end_src
 
-- Disable toolbar
+Disable toolbar and scroll bar
 #+begin_src emacs-lisp
-(tool-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
 #+end_src
 
-- Disable scroll bars
-#+begin_src emacs-lisp
-(scroll-bar-mode -1)
-#+end_src
-
-- Disable current line from being highlighted
+Disable current line from being highlighted
 #+begin_src emacs-lisp
  (global-hl-line-mode 0)
 #+end_src
 
-- Set default font
+Set default font
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrains Mono-15"))
 #+end_src
 
-- Remove icon and frametitle
+Remove icon and frametitle
 #+begin_src emacs-lisp
   (setq ns-use-proxy-icon nil)
   (setq frame-title-format nil)
 #+end_src
 
-- Enable parenthesis matching
+Enable parenthesis matching
 #+begin_src emacs-lisp
     (show-paren-mode 1)
 #+end_src 
 
-- Use smart parenthesis
+Use smart parenthesis
 #+begin_src emacs-lisp
 (require 'smartparens-config)
 #+end_src
 
-- Enable smartparens mode in ess-mode.
+Enable smartparens mode in ess-mode.
 #+begin_src emacs-lisp
 (add-hook 'ess-mode-hook #'smartparens-mode)
 #+end_src
 
+Enable rainbox delimiters
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)
+         (org-mode . rainbow-delimiters-mode)
+         (ess-mode . rainbow-delimiters-mode)))
+#+end_src
 
 Use flycheck instead of flymake
 #+begin_src emacs-lisp
@@ -121,9 +106,8 @@ Use flycheck instead of flymake
 	  modus-themes-paren-match '(intense)
 	  modus-themes-region '(accented)
 	  modus-themes-hl-line '(intense)
-	  modus-themes-org-blocks '(tinted-background)
+          modus-themes-org-blocks 'tinted-background
 	  modus-themes-links '(bold italic background))
-
 
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
@@ -134,19 +118,7 @@ Use flycheck instead of flymake
   ;; (load-theme 'solarized-selenized-dark t)
 #+end_src
 
-#+RESULTS:
-: modus-themes-toggle
-
 * Language
-Enable rainbox delimiters
-#+begin_src emacs-lisp
-(use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)
-         (org-mode . rainbow-delimiters-mode)
-         (ess-mode . rainbow-delimiters-mode)))
-#+end_src
-
-
 ** Org Mode
 Increase the contrast of code blocks
 #+begin_src emacs-lisp :eval no
@@ -193,9 +165,27 @@ Make org mode export to ODT to DOCX
 
 ** R Programming Language
 
-- Enable polymode for R
+Enable polymode for R
 #+begin_src emacs-lisp
   (require 'poly-R)
+#+end_src
+
+Font lock keywords for syntactic highlighting in R
+#+begin_src emacs-lisp
+  ;; Font lock keywords for syntactic highlighting:
+  (setq ess-R-font-lock-keywords
+	'((ess-R-fl-keyword:keywords . t)
+	  (ess-R-fl-keyword:constants . t)
+	  (ess-R-fl-keyword:modifiers . t)
+	  (ess-R-fl-keyword:fun-defs . t)
+	  (ess-R-fl-keyword:assign-ops . t)
+	  (ess-R-fl-keyword:%op% . t)
+	  (ess-fl-keyword:fun-calls . t)
+	  (ess-fl-keyword:numbers . t)
+	  (ess-fl-keyword:operators . t)
+	  (ess-fl-keyword:delimiters . t)
+	  (ess-fl-keyword:=)
+	  (ess-R-fl-keyword:F&T . t)))
 #+end_src
 
 ** LaTeX
@@ -323,6 +313,7 @@ Set up ivy-rich
 * Evil Mode
 #+begin_src emacs-lisp
   (use-package evil
+    :init (setq evil-want-C-i-jump nil) ;; disable C-i and restore TAB functionality
     :config
     (evil-mode 1))
 #+end_src
@@ -347,6 +338,7 @@ Set up ivy-rich
      (after-init . global-company-mode))
 #+end_src
 
+* Local Variables
 ;; Local Variables:
 ;; eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
 ;; End:
