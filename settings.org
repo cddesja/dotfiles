@@ -1,5 +1,6 @@
 #+TITLE: Orgmode Configuration File
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+#+auto_tangle: t
 
 * Emacs UI fixes
 
@@ -133,8 +134,6 @@ Increase the contrast of code blocks
 ;;					      (face-attribute 'default :background) 10))
 #+end_src
 
-Configure scaling of headers
-
 Enable bullets
 #+begin_src emacs-lisp
   (require 'org-bullets)
@@ -161,6 +160,13 @@ Log time when a task has finished
 Make org mode export to ODT to DOCX
 #+begin_src emacs-lisp
 (setq org-odt-preferred-output-format "docx")
+#+end_src
+
+Enable auto tangle
+#+begin_src emacs-lisp
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
 ** R Programming Language
@@ -337,9 +343,4 @@ Set up ivy-rich
     :hook
      (after-init . global-company-mode))
 #+end_src
-
-* Local Variables
-;; Local Variables:
-;; eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
-;; End:
 

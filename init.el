@@ -90,6 +90,10 @@
 
 (setq org-odt-preferred-output-format "docx")
 
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+
 (require 'poly-R)
 
 ;; Font lock keywords for syntactic highlighting:
