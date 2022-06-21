@@ -223,8 +223,14 @@ Font lock keywords for syntactic highlighting in R
 
 Enable LSP for R
 TODO: This breaks org mode fontification for R. Not sure why. 
-#+begin_src emacs-lisp :eval no
-  ;; (use-package lsp-mode			;
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :config
+    (lsp-enable-which-key-integration t))
+  ;; (Use-package lsp-mode			;
   ;;   :init
   ;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   ;;   (setq lsp-keymap-prefix "C-c l")
@@ -317,6 +323,7 @@ Set up ivy-rich
 #+end_src
 
 * Evil Mode
+Disable evil mode for now
 #+begin_src emacs-lisp
   (use-package evil
     :init (setq evil-want-C-i-jump nil) ;; disable C-i and restore TAB functionality
@@ -331,16 +338,20 @@ Set up ivy-rich
 
 * Company Mode
 #+begin_src emacs-lisp
-  (use-package company
-    :bind (:map company-active-map
-	   ("C-n" . company-select-next)
-	   ("C-p" . company-select-previous)
-	   ("M-h" . company-show-doc-buffer))
-    :config
-    (setq company-idle-delay 0.3)
-    (setq company-selection-wrap-around t)
-    (setq company-tooltip-limit 10)
-    :hook
-     (after-init . global-company-mode))
+  ;; (use-package company
+  ;;   :bind (:map company-active-map
+  ;; 	 ("C-n" . company-select-next)
+  ;; 	 ("C-p" . company-select-previous)
+  ;; 	 ("M-h" . company-show-doc-buffer))
+  ;;   :config
+  ;;   (setq company-idle-delay 0.3)
+  ;;   (setq company-selection-wrap-around t)
+  ;;   (setq company-tooltip-limit 10)
+  ;;   :hook
+  ;;    (after-init . global-company-mode))
 #+end_src
 
+* Fix resizing issue
+#+begin_src emacs-lisp
+(setq frame-resize-pixelwise t)
+#+end_src

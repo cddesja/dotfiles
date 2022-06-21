@@ -122,7 +122,13 @@
 
 (exec-path-from-shell-initialize)
 
-;; (use-package lsp-mode			;
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+;; (Use-package lsp-mode			;
 ;;   :init
 ;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
 ;;   (setq lsp-keymap-prefix "C-c l")
@@ -208,14 +214,29 @@
 
 (mac-auto-operator-composition-mode)
 
-(use-package company
-  :bind (:map company-active-map
-	 ("C-n" . company-select-next)
-	 ("C-p" . company-select-previous)
-	 ("M-h" . company-show-doc-buffer))
-  :config
-  (setq company-idle-delay 0.3)
-  (setq company-selection-wrap-around t)
-  (setq company-tooltip-limit 10)
-  :hook
-   (after-init . global-company-mode))
+;; (use-package company
+;;   :bind (:map company-active-map
+;; 	 ("C-n" . company-select-next)
+;; 	 ("C-p" . company-select-previous)
+;; 	 ("M-h" . company-show-doc-buffer))
+;;   :config
+;;   (setq company-idle-delay 0.3)
+;;   (setq company-selection-wrap-around t)
+;;   (setq company-tooltip-limit 10)
+;;   :hook
+;;    (after-init . global-company-mode))
+
+(setq frame-resize-pixelwise t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(which-key vterm use-package solarized-theme smartparens rainbow-delimiters poly-R poet-theme org-bullets org-auto-tangle org nordless-theme nord-theme monokai-theme monokai-pro-theme modus-themes magit macrostep lsp-ui lsp-julia lsp-ivy leuven-theme kaolin-themes julia-repl ivy-rich htmlize horizon-theme helpful helm gruvbox-theme gotham-theme github-dark-vscode-theme focus flycheck flx exec-path-from-shell evil ess dracula-theme doom-themes doom-modeline cyberpunk-theme cyberpunk-2019-theme counsel company-quickhelp color-theme-sanityinc-tomorrow clues-theme berrys-theme)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
