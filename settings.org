@@ -1,6 +1,8 @@
+
 #+TITLE: Orgmode Configuration File
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 #+auto_tangle: t
+
 
 * Emacs UI fixes
 
@@ -17,7 +19,7 @@ Disable annoying bell function
 Disable toolbar and scroll bar
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+ (scroll-bar-mode -1)
 #+end_src
 
 Disable current line from being highlighted
@@ -63,12 +65,12 @@ Enable rainbox delimiters
 Use flycheck instead of flymake
 #+begin_src emacs-lisp
 ;; Remove Flymake support:
-(setq ess-use-flymake nil)
+;;(setq ess-use-flymake nil)
 ;; Replace it (globally) by Flycheck:
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode t))
+;;(use-package flycheck
+;;  :ensure t
+;;  :init
+;;  (global-flycheck-mode t))
 #+end_src 
 
 * Setup MELPA repository
@@ -224,43 +226,54 @@ Font lock keywords for syntactic highlighting in R
 Enable LSP for R
 TODO: This breaks org mode fontification for R. Not sure why. 
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :init
-    (setq lsp-keymap-prefix "C-c l")
-    :config
-    (lsp-enable-which-key-integration t))
-  ;; (Use-package lsp-mode			;
-  ;;   :init
-  ;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  ;;   (setq lsp-keymap-prefix "C-c l")
-  ;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-  ;; 		    (ess-r-mode . lsp)
-  ;; 		    ;; if you want which-key integration
-  ;; 		    (lsp-mode . lsp-enable-which-key-integration)
-  ;; 		    )
-  ;;   :commands lsp)
+	(use-package lsp-mode
+	  :init
+	  (setq lsp-keymap-prefix "C-c l")
+	  :hook ((ess-r-mode . lsp)
+		 (lsp-mode . lsp-enable-which-key-integration))
+	  :commands lsp)
 
-  ;; ;; optionally
-  ;; (use-package lsp-ui :commands lsp-ui-mode)
-  ;; ;; if you are helm user
-  ;; ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-  ;; ;; if you are ivy user
-  ;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-  ;; ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+	;;(use-package which-key
+	;;  :config
+	;;  (which-key-mode))
+	;; (Use-package lsp-mode			;
+	;;   :init
+	;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+	;;   (setq lsp-keymap-prefix "C-c l")
+	;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	;; 		    (ess-r-mode . lsp)
+	;; 		    ;; if you want which-key integration
+	;; 		    (lsp-mode . lsp-enable-which-key-integration)
+	;; 		    )
+	;;   :commands lsp)
 
-  ;; ;; optionally if you want to use debugger
-  ;; ;;(use-package dap-mode)
-  ;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+	;; ;; optionally
+	(use-package lsp-ui
+	  :commands lsp-ui-mode
+	  :init
+	  (setq lsp-ui-doc-max-width 50
+		lsp-ui-doc-use-webkit t))
 
-  ;; ;; optional if you want which-key integration
-  ;; ;;(use-package which-key
-  ;; ;;    :config
-  ;; ;;    (which-key-mode))
-  ;; (with-eval-after-load 'lsp-mode  (lsp-register-client (make-lsp-client 
-  ;; 						       :new-connection (lsp-stdio-connection '("R" "--slave" "-e" "languageserver::run()"))
-  ;; 						       :major-modes '(ess-r-mode inferior-ess-r-mode)                    :server-id 'lsp-R)))
+
+  
+	;; ;; if you are helm user
+	;; ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+	;; ;; if you are ivy user
+	(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+	;; ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+	;; ;; optionally if you want to use debugger
+	;; ;;(use-package dap-mode)
+	;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+	;; ;; optional if you want which-key integration
+	;; ;;(use-package which-key
+	;; ;;    :config
+	;; ;;    (which-key-mode))
 #+end_src
+
+#+RESULTS:
+: t
 
 * Set up Ivy
 #+begin_src emacs-lisp
@@ -326,9 +339,9 @@ Set up ivy-rich
 Disable evil mode for now
 #+begin_src emacs-lisp
   (use-package evil
-    :init (setq evil-want-C-i-jump nil) ;; disable C-i and restore TAB functionality
-    :config
-    (evil-mode 1))
+      :init (setq evil-want-C-i-jump nil) ;; disable C-i and restore TAB functionality
+      :config
+      (evil-mode 1))
 #+end_src
 
 * Enable ligatures
@@ -338,18 +351,27 @@ Disable evil mode for now
 
 * Company Mode
 #+begin_src emacs-lisp
-  ;; (use-package company
-  ;;   :bind (:map company-active-map
-  ;; 	 ("C-n" . company-select-next)
-  ;; 	 ("C-p" . company-select-previous)
-  ;; 	 ("M-h" . company-show-doc-buffer))
-  ;;   :config
-  ;;   (setq company-idle-delay 0.3)
-  ;;   (setq company-selection-wrap-around t)
-  ;;   (setq company-tooltip-limit 10)
-  ;;   :hook
-  ;;    (after-init . global-company-mode))
+  (use-package company
+    :bind (:map company-active-map
+	("C-n" . company-select-next)
+	("C-p" . company-select-previous)
+	("M-h" . company-show-doc-buffer))
+    :custom
+    (company-idle-delay 0)
+    (company-selection-wrap-around t)
+    (company-tooltip-limit 10)
+    (company-minimum-prefix-length 1)
+    :hook
+     (after-init . global-company-mode))
 #+end_src
+
+Enable company-box mode
+
+#+begin_src emacs-lisp
+  ;;(use-package company-box
+  ;;  :hook (company-mode . company-box-mode))
+#+end_src
+
 
 * Fix resizing issue
 #+begin_src emacs-lisp
